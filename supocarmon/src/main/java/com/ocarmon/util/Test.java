@@ -30,7 +30,8 @@ public class Test {
 		String urlToken="ou-ba-81-97";
 //		String urlToken="qing-ke-85-7";
 //		String urlToken="liu-yi-yao-93-70";
-		connDB();
+//		connDB();
+		ddd(urlToken);
 	}
 	
 	public static void connDB() {

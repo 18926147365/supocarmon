@@ -62,7 +62,7 @@ public class HttpClientUtil {
 
 
 	public HttpClientUtil() {
-		
+//		proxy = new HttpHost("183.63.126.227", 63000);
 		try {
 			SSLContext sslContext = SSLContexts.custom()
 					.loadTrustMaterial(KeyStore.getInstance(KeyStore.getDefaultType()), new TrustStrategy() {
