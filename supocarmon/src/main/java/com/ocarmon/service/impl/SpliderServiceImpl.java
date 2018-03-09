@@ -61,11 +61,12 @@ public class SpliderServiceImpl implements SpliderService {
 				articlesCount = user.getIntValue("articlesCount");
 				if (articlesCount > 0) {// 判断用户写的文章数是否大于，若大于1则提取用户
 					urlToken = user.getString("urlToken");
-					
 					UrlToken token= mongoTemplate.findOne(new Query(Criteria.where("urlToken").is(urlToken)), UrlToken.class);
+					
 					if(token!=null) {
 						continue;
 					}
+					
 					JSONObject tokenJson=new JSONObject();
 					tokenJson.put("urlToken", urlToken);
 					mongoTemplate.insert(tokenJson.toString(), "splidered_users");
@@ -77,8 +78,6 @@ public class SpliderServiceImpl implements SpliderService {
 					}
 				}
 			}
-			
-			
 			// 开始爬取文章
 			url = "https://www.zhihu.com/people/" + urlToken + "/posts";
 			content = (clientUtil.getWebPage(url));
@@ -97,7 +96,7 @@ public class SpliderServiceImpl implements SpliderService {
 					mongoTemplate.insert(articles, "articles");// 保存冷数据到mongodb
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 

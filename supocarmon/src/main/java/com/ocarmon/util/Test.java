@@ -4,12 +4,21 @@
 package com.ocarmon.util;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Set;
 
+import org.bson.BSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
+import com.mongodb.util.JSON;
 
 /** 
 * @author 李浩铭 
@@ -21,8 +30,26 @@ public class Test {
 		String urlToken="ou-ba-81-97";
 //		String urlToken="qing-ke-85-7";
 //		String urlToken="liu-yi-yao-93-70";
-		ddd(urlToken);
+		connDB();
 	}
+	
+	public static void connDB() {
+		   try {
+			MongoClient client = new MongoClient("39.108.115.133",27017);
+			DB db=client.getDB("ocarmon");
+			db.authenticate("root", "a972188163;".toCharArray());
+			
+			DBObject dbObject= new BasicDBObject();  
+			dbObject.put("name", "123");
+			
+			DBCollection course = db.getCollection("splidered_users");//
+			System.out.println(course.save(dbObject));
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		   
+	}
+	
 	
 	
 	private static void ddd(String name) {
@@ -31,10 +58,10 @@ public class Test {
 		HttpClientUtil httpClientUtil=new HttpClientUtil();
 		try {
 			String content=(httpClientUtil.getWebPage(url));
+			System.out.println(content);
 			Document doc = Jsoup.parse(content);
 			String jsonurl = doc.select("[data-state]").first().attr("data-state");
 			JSONObject jsonObject=JSONObject.parseObject(jsonurl);
-			System.out.println(jsonObject);
 			JSONObject followUser= jsonObject.getJSONObject("entities").getJSONObject("users");
 			Set<String> set= followUser.keySet();
 			int articlesCount=0;
