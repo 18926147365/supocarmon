@@ -156,18 +156,16 @@ public class HelloController {
 	@RequestMapping("start")
 	public void strat() {
 		scheduledThreadPool=Executors.newScheduledThreadPool(3);
-
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 2; i++) {
 			scheduledThreadPool.scheduleAtFixedRate(new Runnable() {
 				@Override
 				public void run() {
 					count++;
-				
 					//若爬取数大于500 ,暂停线程池
 					if(count>500) {
 						LOGGER.info("线程暂停");
 						try {
-							scheduledThreadPool.awaitTermination(5, TimeUnit.MINUTES);
+							scheduledThreadPool.awaitTermination(10, TimeUnit.MINUTES);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
