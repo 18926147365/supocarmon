@@ -1,0 +1,24 @@
+.artiles-introduce{
+	height: 5rem;
+	font-size: 1.1rem;
+}
+.introduce-author{
+}
+.introduce-sourceurl{
+position:absolute;
+    right: 1.3rem;
+    top: 1.56rem;
+    color: #85c3c6;
+
+}
+#articles-voteupCount{
+	color: #3b97e4;
+}
+#loading{
+	height: 100%;
+    width: 100%;
+    background-color: #0009;
+    position: absolute;
+    top: 0;
+    display: none;
+}

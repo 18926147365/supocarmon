@@ -8,8 +8,10 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
+import org.jsoup.helper.StringUtil;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -47,37 +49,44 @@ public class SpliderServiceImpl implements SpliderService {
 		String url = "https://www.zhihu.com/people/" + userToken + "/following";
 		HttpClientUtil clientUtil = new HttpClientUtil();
 		try {
+			
 			String content = (clientUtil.getWebPage(url));
 			Document doc = Jsoup.parse(content);
 			String jsonurl = doc.select("[data-state]").first().attr("data-state");
 			JSONObject jsonObject = JSONObject.parseObject(jsonurl);
 			JSONObject followUser = jsonObject.getJSONObject("entities").getJSONObject("users");
+			if(followUser.size()==0) {
+				logger.info("爬取数据异常");
+			}
 			Set<String> set = followUser.keySet();
 			int articlesCount = 0;
 			JSONObject user = new JSONObject();
 			String urlToken = null;
 			for (String key : set) {
+				
 				user = followUser.getJSONObject(key);
 				articlesCount = user.getIntValue("articlesCount");
-				if (articlesCount > 0) {// 判断用户写的文章数是否大于，若大于1则提取用户
+				if (articlesCount > 0 || userTokenQueue.size()<10) {// 判断用户写的文章数是否大于，若大于1则提取用户
 					urlToken = user.getString("urlToken");
-					UrlToken token= mongoTemplate.findOne(new Query(Criteria.where("urlToken").is(urlToken)), UrlToken.class);
 					
-					if(token!=null) {
+					UrlToken token= mongoTemplate.findOne(new Query(Criteria.where("urlToken").is(urlToken)), UrlToken.class);
+					if(token!=null || StringUtils.isEmpty(urlToken) || urlToken.equals("null")) {
 						continue;
 					}
 					
-					JSONObject tokenJson=new JSONObject();
-					tokenJson.put("urlToken", urlToken);
-					mongoTemplate.insert(tokenJson.toString(), "splidered_users");
 					
 					if (!userTokenQueue.contains(urlToken)) {
 						userTokenQueue = (Queue<String>) redisService.get(Constants.USERTTOKENQUEUE);
-						userTokenQueue.add(urlToken);
+						userTokenQueue.offer(urlToken);
 						redisService.set(Constants.USERTTOKENQUEUE, userTokenQueue);
+						JSONObject tokenJson=new JSONObject();
+						tokenJson.put("urlToken", urlToken);
+						mongoTemplate.insert(tokenJson.toString(), "splidered_users");
 					}
 				}
 			}
+			
+			
 			// 开始爬取文章
 			url = "https://www.zhihu.com/people/" + urlToken + "/posts";
 			content = (clientUtil.getWebPage(url));
@@ -89,11 +98,19 @@ public class SpliderServiceImpl implements SpliderService {
 			JSONObject articles = new JSONObject();
 			for (String key : set) {
 				articles = articlesJSON.getJSONObject(key);
+				if(StringUtils.isEmpty(articles.getString("title"))) {
+					continue;
+				}
 				Articles qArticles = mongoTemplate
 						.findOne(new Query(Criteria.where("id").is(articles.getIntValue("id"))), Articles.class);
+				
 				if(qArticles==null) {
 					logger.info("爬取文章:" + articles.getString("title"));
 					mongoTemplate.insert(articles, "articles");// 保存冷数据到mongodb
+					
+				}else {
+					logger.info("文章已存在：("+urlToken+")"+articles.getString("title"));
+					return;
 				}
 			}
 		} catch (Exception e) {

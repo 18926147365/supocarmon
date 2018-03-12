@@ -27,7 +27,7 @@ import com.mongodb.util.JSON;
 public class Test {
 
 	public static void main(String[] args) {
-		String urlToken="ou-ba-81-97";
+		String urlToken="jixin";
 //		String urlToken="qing-ke-85-7";
 //		String urlToken="liu-yi-yao-93-70";
 //		connDB();

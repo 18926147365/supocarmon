@@ -21,7 +21,14 @@ import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +39,7 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.ocarmon.config.Constants;
 import com.ocarmon.entity.Articles;
 import com.ocarmon.entity.UrlToken;
 import com.ocarmon.service.RedisService;
@@ -53,6 +61,7 @@ public class HelloController {
 	private RedisService redisService;
 	@Autowired
 	private SpliderService spliderService;
+
 
 	@RequestMapping("find")
 	public JSONArray find() {
@@ -127,6 +136,12 @@ public class HelloController {
 		 }
 	@RequestMapping("save")
 	public void save() {
+		JSONObject articles = new JSONObject();
+		https://www.zhihu.com/people/teng-yun-zhi-ku/following
+		articles.put("urlToken", "jixin");
+			mongoTemplate.insert(articles, "splidered_users");
+			
+			if(true)return;
 		HttpClientUtil httpClientUtil = new HttpClientUtil();
 		String url = "https://www.zhihu.com/people/" + "ou-ba-81-97" + "/posts";
 		String content;
@@ -137,10 +152,6 @@ public class HelloController {
 			JSONObject jsonObject = JSONObject.parseObject(jsonurl);
 			JSONObject articlesJSON = jsonObject.getJSONObject("entities").getJSONObject("articles");
 			Set<String> set = articlesJSON.keySet();
-			JSONObject articles = new JSONObject();
-			articles.put("urlToken", "4564654");
-				mongoTemplate.insert(articles, "splidered_users");
-				
 			
 
 		} catch (Exception e) {
@@ -155,8 +166,22 @@ public class HelloController {
 
 	@RequestMapping("start")
 	public void strat() {
+		//查询列队中是否存在urlToken
+		Queue<String> queue= (Queue<String>) redisService.get(Constants.USERTTOKENQUEUE);
+		if(queue==null || queue.size()==0) {
+			Query query = new Query();  
+			query.with(new Sort(new Order(Direction.DESC,"_id")));
+			query.limit(10);
+			List<UrlToken> list=mongoTemplate.find(query,UrlToken.class);
+			queue=new  LinkedList<>();
+			for (UrlToken urlToken : list) {
+				queue.add(urlToken.getUrlToken());
+				System.out.println(urlToken.getUrlToken());
+			}
+			redisService.set(Constants.USERTTOKENQUEUE, queue);
+		}
 		scheduledThreadPool=Executors.newScheduledThreadPool(3);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 3; i++) {
 			scheduledThreadPool.scheduleAtFixedRate(new Runnable() {
 				@Override
 				public void run() {
@@ -174,30 +199,30 @@ public class HelloController {
 					}
 					spliderService.start();
 				}
-			}, 0, 3, TimeUnit.SECONDS);
+			}, 0, 4, TimeUnit.SECONDS);
 		}
 	}
 
 	@RequestMapping("hello")
 	public void hello() {
 		Queue<String> queue = new LinkedList<String>();
+		queue.add("zhang-ya-wei-66");
+		queue.add("cherry-kris");
+		queue.add("theqiong");
+		queue.add("lin-zi-yu-13");
+		queue.add("zhu-xu-yue-64");
+		queue.add("hushendong");
 		
-		queue.add("kentchou");
-		queue.add("tata-wong-83");
-		queue.add("xia-tian-20-85-95");
-		queue.add("neal-sheng");
-		queue.add("yang-zhi-64-93");
-		queue.add("lin-yong-kang-65");
-		redisService.set("userTokenQueue", queue);
+		redisService.set(Constants.USERTTOKENQUEUE, queue);
 	}
 
 	@RequestMapping("getHello")
-	public void getHello() {
-		Queue<String> queue = (Queue<String>) redisService.get("userTokenQueue");
-		// queue.add("45646");
-		// redisService.set("mytest", queue);
+	public String getHello() {
+//		UrlToken token= mongoTemplate.findOne(new Query(Criteria.where("urlToken").is("")), UrlToken.class);
+		Queue<String> queue = (Queue<String>) redisService.get(Constants.USERTTOKENQUEUE);
 		for (String key : queue) {
 			System.out.println(key);
 		}
+		return queue.toString();
 	}
 }

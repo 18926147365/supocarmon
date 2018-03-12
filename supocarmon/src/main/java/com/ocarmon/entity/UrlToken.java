@@ -27,6 +27,14 @@ public class UrlToken {
 	public void setUrlToken(String urlToken) {
 		this.urlToken = urlToken;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "UrlToken [_id=" + _id + ", urlToken=" + urlToken + "]";
+	}
 	
 	
 }

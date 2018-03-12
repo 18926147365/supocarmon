@@ -1,14 +1,215 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset=utf-8>
-<meta name=viewport
-	content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="never">
 <title>ocarmon</title>
-
+<link rel="stylesheet" href="/component/css/base.css">
+<link rel="stylesheet" href="/component/css/articles.css">
+<link rel="stylesheet" href="/component/css/loading.css">
+<link rel="stylesheet"
+	href="/component/plugin/bootstrap/css/bootstrap.css">
+<script type="text/javascript" src="/component/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="/component/js/referrer-killer.js"></script>
+<script type="text/javascript" src="/component/js/index.js"></script>
+<script type="text/javascript"
+	src="/component/plugin/bootstrap/js/bootstrap.js"></script>
 </head>
 <body>
-<a href="/start">start</a>
-<a href="/hello">hello</a>
-<a href="/getHello">getHello</a>
+	<!-- 导航栏 -->
+	<div>
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse"
+						data-target="#example-navbar-collapse">
+						<span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span
+							class="icon-bar"></span><span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">ocarmon</a>
+				</div>
+				<div class="collapse navbar-collapse" id="example-navbar-collapse">
+					<ul class="nav navbar-nav">
+						<li class="active"><a href="#">知乎热门话题</a></li>
+						<li><a href="#">小游戏</a></li>
+
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<!-- 导航栏 end-->
+	<!-- 画板 -->
+	<div>
+		<div class="panel panel-success">
+			<div class="panel-heading">@知乎热点文章<span  style="float: right;"><a class="glyphicon glyphicon-refresh" id="articles-refresh" href="#">换一批</a></span></div>
+			<div class="panel-body">
+				<div class="list-group" id="list-articles"></div>
+			</div>
+		</div>
+	</div>
+	<div class="panel panel-default hide">
+		<div class="panel-heading">
+			<h3 class="panel-title">带有 title 的面板标题</h3>
+		</div>
+		<div class="panel-body">面板内容</div>
+	</div>
+
+
+	<!--  显示话题详情画板 -->
+	<div id="artiles-details" class="modal fade" tabindex="-1"
+		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">×</button>
+					<h4 class="modal-title" id="artiles-title"></h4>
+				</div>
+				<div class="modal-body" id="artiles-content">
+					<div class="artiles-introduce">
+						<span id="artiles-author" class="glyphicon glyphicon-user introduce-author"></span>
+						<span class="glyphicon glyphicon-eye-open" style="padding-left: 2rem;">浏览次数(<span id="articles-voteupCount">5254</span>)</span>
+						<a href="" id="artiles-sourceurl"><span  class="introduce-sourceurl">查看原文</span></a>
+					</div>
+					<div id="artiles-content-info">
+					
+					</div>
+				</div>
+				<div class="modal-footer">
+					<div style="position: absolute;">转自:<a href="https://www.zhihu.com/">知乎网站</a></div>
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- 加载框css3 -->
+	<div id="loading" >
+		<div class="circle-loader">
+        <div class="circle-line">
+            <div class="circle circle-blue"></div>
+            <div class="circle circle-blue"></div>
+            <div class="circle circle-blue"></div>
+        </div>
+        <div class="circle-line">
+            <div class="circle circle-yellow"></div>
+            <div class="circle circle-yellow"></div>
+            <div class="circle circle-yellow"></div>
+        </div>
+        <div class="circle-line">
+            <div class="circle circle-red"></div>
+            <div class="circle circle-red"></div>
+            <div class="circle circle-red"></div>
+        </div>
+        <div class="circle-line">
+            <div class="circle circle-green"></div>
+            <div class="circle circle-green"></div>
+            <div class="circle circle-green"></div>
+        </div>
+    </div>
+	</div>
+	 
+	
+</body>
+
+<script type="text/javascript">
+	$(function() {
+		queryArticlesTopic();
+		//点击话题事件
+		$("#list-articles").on("click", ".list-group-item", function() {
+			var id = $(this)[0].dataset.id;
+			showLoading();
+			$.ajax({
+				url:"/articles/queryById",
+				data:{id:id},
+				dataType:"json",
+				success:function(data){
+					if(data.code==0){
+						$("#artiles-details").modal('show');
+						var info=JSON.parse(data.info);
+						var content=info.content;
+						var title=info.title;
+						var sourceurl=info.url;
+						var voteupCount=info.voteupCount;
+						$("#articles-voteupCount").text(voteupCount);
+						$("#artiles-title").text(title);
+						$("#artiles-author").text(info.author.name);
+						$("#artiles-content-info").html(content);
+						$("#artiles-sourceurl").attr("href",sourceurl);
+						loadImage();
+					}
+				},complete:function(){
+					closeLoading();
+				}
+			})
+			
+		})
+		
+		$("#checkSource").click(function(){
+			var url=$(this)[0].dataset.sourceurl;
+			location.href=url;
+		})
+		//换一批话题
+		$("#articles-refresh").click(function(){
+			queryArticlesTopic();
+		})
+		
+		
+	})
+
+	
+	
+	//查询热点话题
+	function queryArticlesTopic() {
+		$("#list-articles").empty();
+		showLoading();
+		$.ajax({
+					url : "/articles/queryTopic",
+					dataType : "json",
+					success : function(data) {
+						if (data.code == 0) {
+							var info = JSON.parse(data.info);
+							var htmlStr = "";
+							for ( var i in info) {
+								htmlStr += '<a href="#" class="list-group-item" data-id="'+info[i].id+'">'
+										+ info[i].title + '</a>';
+							}
+							$("#list-articles").append(htmlStr)
+						}
+					},complete:function(){
+						closeLoading();
+					}
+				})
+	}
+</script>
+<script type="text/javascript">
+//加载403图片
+function loadImage(){
+	var imgs = $("#artiles-content img");
+	for (var i = 0; i < imgs.length; i++) {
+		var data_src = $(imgs[i]).attr("data-actualsrc");
+		
+		var html = showImg(data_src);
+		$(imgs[i]).replaceWith(html);
+	}
+}
+function showImg(url) {
+	var imgid = Math.random(), frameid = 'frameimg' + imgid;
+	window['img' + imgid] = '<img id="img" style="width:20rem;" src=\''+url+'\' />'
+			+ '<script>window.onload = function(){'
+			+ 'parent.document.getElementById(\''
+			+ frameid
+			+ '\').width=document.getElementById(\'img\').width+\'px\';'
+			+ 'parent.document.getElementById(\''
+			+ frameid
+			+ '\').height=document.getElementById(\'img\').height+\'px\';'
+			+ '}<'+'/script>';
+	return '<iframe id="' + frameid + '" src="javascript:parent[\'img'
+			+ imgid
+			+ '\'];" frameBorder="0" scrolling="no" width="100%"></iframe>';
+}
+
+</script>
 </html>

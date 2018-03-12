@@ -3,6 +3,8 @@
  */
 package com.ocarmon.entity;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -46,6 +48,9 @@ public class Articles {
 	
 	private String imageUrl;
 
+	
+	private Author author;
+	
 	/**
 	 * @return the id
 	 */
@@ -256,6 +261,20 @@ public class Articles {
 		this.imageUrl = imageUrl;
 	}
 
+	/**
+	 * @return the author
+	 */
+	public Author getAuthor() {
+		return author;
+	}
+
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(Author author) {
+		this.author = author;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -265,8 +284,10 @@ public class Articles {
 				+ updated + ", commentPermission=" + commentPermission + ", isNormal=" + isNormal + ", voting=" + voting
 				+ ", excerptTitle=" + excerptTitle + ", voteupCount=" + voteupCount + ", excerpt=" + excerpt + ", type="
 				+ type + ", commentCount=" + commentCount + ", url=" + url + ", content=" + content + ", imageUrl="
-				+ imageUrl + "]";
+				+ imageUrl + ", author=" + author + "]";
 	}
+
+	
 	
 	
 }
