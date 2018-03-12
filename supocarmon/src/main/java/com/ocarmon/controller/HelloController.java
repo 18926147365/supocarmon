@@ -199,7 +199,7 @@ public class HelloController {
 					}
 					spliderService.start();
 				}
-			}, 0, 4, TimeUnit.SECONDS);
+			}, 0, 3, TimeUnit.SECONDS);
 		}
 	}
 
