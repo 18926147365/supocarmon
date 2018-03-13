@@ -6,7 +6,9 @@ package com.ocarmon.controller;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -134,29 +136,19 @@ public class HelloController {
 		  } 
 		  return reMap;
 		 }
-	@RequestMapping("save")
-	public void save() {
-		JSONObject articles = new JSONObject();
-		https://www.zhihu.com/people/teng-yun-zhi-ku/following
-		articles.put("urlToken", "jixin");
-			mongoTemplate.insert(articles, "splidered_users");
-			
-			if(true)return;
+	@RequestMapping("test")
+	public String test() {
 		HttpClientUtil httpClientUtil = new HttpClientUtil();
 		String url = "https://www.zhihu.com/people/" + "ou-ba-81-97" + "/posts";
 		String content;
 		try {
 			content = (httpClientUtil.getWebPage(url));
-			Document doc = Jsoup.parse(content);
-			String jsonurl = doc.select("[data-state]").first().attr("data-state");
-			JSONObject jsonObject = JSONObject.parseObject(jsonurl);
-			JSONObject articlesJSON = jsonObject.getJSONObject("entities").getJSONObject("articles");
-			Set<String> set = articlesJSON.keySet();
-			
+			return content;
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	@RequestMapping("stop")
@@ -186,11 +178,22 @@ public class HelloController {
 				@Override
 				public void run() {
 					count++;
-					//若爬取数大于500 ,暂停线程池
-					if(count>500) {
+					//若爬取数大于300 ,暂停线程池
+					if(count>300) {
 						LOGGER.info("线程暂停");
 						try {
-							scheduledThreadPool.awaitTermination(10, TimeUnit.MINUTES);
+							SimpleDateFormat sdf=new SimpleDateFormat("HH");
+							int hh=Integer.valueOf(sdf.format(new Date()));
+							int[] hhs= {2,4,6,8,10,12,14,16,18,20};
+							for(int i=0;i<hhs.length;i++) {
+								if(hh==hhs[i]) {
+									scheduledThreadPool.awaitTermination(5, TimeUnit.MINUTES);
+								}else {
+									scheduledThreadPool.awaitTermination(60, TimeUnit.MINUTES);
+								}
+							}
+							
+							
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}

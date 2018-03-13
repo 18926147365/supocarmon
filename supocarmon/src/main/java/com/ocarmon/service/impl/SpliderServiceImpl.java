@@ -77,7 +77,7 @@ public class SpliderServiceImpl implements SpliderService {
 					
 					if (!userTokenQueue.contains(urlToken)) {
 						userTokenQueue = (Queue<String>) redisService.get(Constants.USERTTOKENQUEUE);
-						userTokenQueue.offer(urlToken);
+						userTokenQueue.add(urlToken);
 						redisService.set(Constants.USERTTOKENQUEUE, userTokenQueue);
 						JSONObject tokenJson=new JSONObject();
 						tokenJson.put("urlToken", urlToken);

@@ -21,7 +21,7 @@
 	<div>
 		<nav class="navbar navbar-default" role="navigation">
 			<div class="container-fluid">
-				<div class="navbar-header">
+				<div class="navbar-header" id="back-header">
 					<button type="button" class="navbar-toggle" data-toggle="collapse"
 						data-target="#example-navbar-collapse">
 						<span class="sr-only">切换导航</span> <span class="icon-bar"></span> <span
@@ -56,18 +56,22 @@
 		<div class="panel-body">面板内容</div>
 	</div>
 
-
 	<!--  显示话题详情画板 -->
+	<div>
+	<div id="backup" > <a href="#backup-content"><button type="button" class=" btn btn-info btn-sm backup ">
+	 <span class="glyphicon glyphicon-plane"></span>
+	</button></a></div>
 	<div id="artiles-details" class="modal fade" tabindex="-1"
 		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
-			<div class="modal-content">
+			<div class="modal-content" id="backup-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal"
 						aria-hidden="true">×</button>
 					<h4 class="modal-title" id="artiles-title"></h4>
 				</div>
 				<div class="modal-body" id="artiles-content">
+				
 					<div class="artiles-introduce">
 						<span id="artiles-author" class="glyphicon glyphicon-user introduce-author"></span>
 						<span class="glyphicon glyphicon-eye-open" style="padding-left: 2rem;">浏览次数(<span id="articles-voteupCount">5254</span>)</span>
@@ -84,7 +88,7 @@
 			</div>
 		</div>
 	</div>
-	
+	</div>
 	<!-- 加载框css3 -->
 	<div id="loading" >
 		<div class="circle-loader">
@@ -173,7 +177,7 @@
 							var info = JSON.parse(data.info);
 							var htmlStr = "";
 							for ( var i in info) {
-								htmlStr += '<a href="#" class="list-group-item" data-id="'+info[i].id+'">'
+								htmlStr += '<a href="#" class="list-group-item" data-id="'+info[i].id+'"><span class="badge">'+info[i].voteupCount+'</span>'
 										+ info[i].title + '</a>';
 							}
 							$("#list-articles").append(htmlStr)

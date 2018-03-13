@@ -5,6 +5,8 @@ package com.ocarmon.util;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Set;
 
 import org.bson.BSONObject;
@@ -31,7 +33,9 @@ public class Test {
 //		String urlToken="qing-ke-85-7";
 //		String urlToken="liu-yi-yao-93-70";
 //		connDB();
-		ddd(urlToken);
+//		ddd(urlToken);
+		SimpleDateFormat sdf=new SimpleDateFormat("HH");
+		System.out.println(sdf.format(new Date()));
 	}
 	
 	public static void connDB() {
