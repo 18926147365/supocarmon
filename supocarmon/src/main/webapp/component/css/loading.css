@@ -70,7 +70,7 @@
             margin-top: -32px;
             position: absolute;
             left: 50%;
-            top: 50%;
+            top: 33rem;
             -webkit-transform-origin: 16px 16px;
             transform-origin: 16px 16px;
             -webkit-animation: rotate-animation 5s infinite;
