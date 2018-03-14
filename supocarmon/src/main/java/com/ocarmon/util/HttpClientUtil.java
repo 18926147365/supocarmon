@@ -1,5 +1,7 @@
 package com.ocarmon.util;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -32,6 +34,8 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.ocarmon.config.Constants;
 
 import javax.net.ssl.SSLContext;
@@ -60,9 +64,10 @@ public class HttpClientUtil {
 	private static RequestConfig requestConfig;
 
 
+public HttpClientUtil() {}
+	public HttpClientUtil(String host,int port) {
 
-	public HttpClientUtil() {
-//		proxy = new HttpHost("183.63.126.227", 63000);
+		proxy=new HttpHost(host, port);
 		try {
 			SSLContext sslContext = SSLContexts.custom()
 					.loadTrustMaterial(KeyStore.getInstance(KeyStore.getDefaultType()), new TrustStrategy() {

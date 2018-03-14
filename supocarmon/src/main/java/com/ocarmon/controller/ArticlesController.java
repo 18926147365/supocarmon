@@ -51,9 +51,9 @@ public class ArticlesController extends BaseController{
 		fieldsObject.put("id", true);    
 		fieldsObject.put("_id", false);    
 		Query query = new BasicQuery(dbObject,fieldsObject);  
-		query.addCriteria(Criteria.where("voteupCount").gt(500));
+		query.addCriteria(Criteria.where("voteupCount").gt(200));
 //		query.with(new Sort(new Order(Direction.DESC,"voteupCount")));
-		int skip=(int)(Math.random()*1000);
+		int skip=(int)(Math.random()*2000);
 		query.skip(skip);
 		query.limit(20);
 		List<Articles> list=mongoTemplate.find(query, Articles.class, "articles");

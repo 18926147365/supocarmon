@@ -27,5 +27,9 @@ public class Constants {
    
     //redis常量查询key
     public final static String USERTTOKENQUEUE="userTokenQueue";
+    public static String host="119.130.17.124";
+    public static int post=28803;
+    public static int errorRqCount=0;
     
+   
 }
