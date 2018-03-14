@@ -51,14 +51,41 @@ public class ArticlesController extends BaseController{
 		fieldsObject.put("id", true);    
 		fieldsObject.put("_id", false);    
 		Query query = new BasicQuery(dbObject,fieldsObject);  
-		query.addCriteria(Criteria.where("voteupCount").gt(200));
-//		query.with(new Sort(new Order(Direction.DESC,"voteupCount")));
-		int skip=(int)(Math.random()*2000);
-		query.skip(skip);
-		query.limit(20);
+		query.with(new Sort(new Order(Direction.DESC,"voteupCount")));
+		query.skip(0);
+		query.limit(10);
 		List<Articles> list=mongoTemplate.find(query, Articles.class, "articles");
 		return retunSuccess(JSONObject.toJSONString(list));
 	}
+	
+	/**
+	 * 换一批看看
+	 * */
+	@RequestMapping("barterArticles")
+	public String barterArticles() {
+		LOGGER.info("刷新页面");
+		DBObject dbObject = new BasicDBObject();  
+		BasicDBObject fieldsObject=new BasicDBObject();  
+		//指定返回的字段  
+		fieldsObject.put("title", true);    
+		fieldsObject.put("voteupCount", true);    
+		fieldsObject.put("author", true);    
+		fieldsObject.put("updated", true);    
+		fieldsObject.put("commentCount", true);    
+		fieldsObject.put("id", true);    
+		fieldsObject.put("_id", false);    
+		Query query = new BasicQuery(dbObject,fieldsObject);  
+		query.addCriteria(Criteria.where("voteupCount").gt(200));
+//		query.with(new Sort(new Order(Direction.DESC,"voteupCount")));
+		int skip=(int)(Math.random()*3000);
+		query.skip(skip);
+		query.limit(10);
+		List<Articles> list=mongoTemplate.find(query, Articles.class, "articles");
+		return retunSuccess(JSONObject.toJSONString(list));
+	}
+	
+	
+	
 	
 	@RequestMapping("queryById")
 	public String queryById(int id) {

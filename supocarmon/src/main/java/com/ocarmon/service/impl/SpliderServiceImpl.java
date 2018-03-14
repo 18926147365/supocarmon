@@ -95,6 +95,7 @@ public class SpliderServiceImpl implements SpliderService {
 				}
 			}
 
+			Constants.errorRqCount = 0;
 			// 开始爬取文章
 			url = "https://www.zhihu.com/people/" + urlToken + "/posts";
 			content = (clientUtil.getWebPage(url));
@@ -111,7 +112,6 @@ public class SpliderServiceImpl implements SpliderService {
 				}
 				Articles qArticles = mongoTemplate
 						.findOne(new Query(Criteria.where("id").is(articles.getIntValue("id"))), Articles.class);
-
 				if (qArticles == null) {
 					logger.info("爬取文章:" + articles.getString("title"));
 					mongoTemplate.insert(articles, "articles");// 保存冷数据到mongodb
@@ -122,30 +122,29 @@ public class SpliderServiceImpl implements SpliderService {
 				}
 			}
 		} catch (Exception e) {
-			if (e.getMessage().indexOf("404") == -1) {
-				Constants.errorRqCount++;
-				if (Constants.errorRqCount > 5) {
-					Constants.errorRqCount = 0;
-
-					// JSONObject jsonObject = new JSONObject();
-					// String ipString = CommonHttpClientUtil.getIp(
-					// "http://www.jinglingdaili.com/Index-generate_api_url.html?packid=1&qty=1&time=1&pro=%E5%B9%BF%E4%B8%9C%E7%9C%81&city=%E5%B9%BF%E5%B7%9E%E5%B8%82&port=1&format=json&ss=1&css=&dt=1");
-					// jsonObject = JSONObject.parseObject(ipString);
-					// JSONArray arrays = jsonObject.getJSONArray("data");
-					// JSONObject ipJSON = arrays.getJSONObject(0);
-					// Constants.host =ipJSON.getString("IP");
-					// Constants.post = ipJSON.getIntValue("Port");
-					// System.out.println(Constants.host + ":" + Constants.post);
-					
-					String ipString=CommonHttpClientUtil.getIp("http://120.25.150.39:8081/index.php/api/entry?method=proxyServer.ipinfolist&quantity=&province=%E5%B9%BF%E4%B8%9C%E7%9C%81&city=%E5%B9%BF%E5%B7%9E%E5%B8%82&anonymous=1&ms=1&service=0&protocol=1&wdsy=on&distinct=true&format=json&separator=1&separator_txt=");
-					JSONObject data=JSONObject.parseObject(ipString).getJSONObject("data");
-					JSONArray ipArray=data.getJSONObject("list").getJSONArray("ProxyIpInfoList");
-					JSONObject ipJson=ipArray.getJSONObject(0);
-					 Constants.host =ipJson.getString("IP");
-					 Constants.post = ipJson.getIntValue("Port");
+				System.out.println();
+				if(e.getMessage().indexOf("404")==-1) {
+					 JSONObject jsonObject = new JSONObject();
+					 String ipString = CommonHttpClientUtil.getIp(
+					 "http://www.jinglingdaili.com/Index-generate_api_url.html?packid=1&qty=1&time=1&pro=&city=&port=1&format=json&ss=1&css=&dt=1");
+					 jsonObject = JSONObject.parseObject(ipString);
+					 JSONArray arrays = jsonObject.getJSONArray("data");
+					 JSONObject ipJSON = arrays.getJSONObject(0);
+					 Constants.host =ipJSON.getString("IP");
+					 Constants.post = ipJSON.getIntValue("Port");
 					 System.out.println(Constants.host + ":" + Constants.post);
+				}else if(e.getMessage().indexOf("410")!=-1) {
 				}
-			}
+					Constants.errorRqCount++;
+//					String ipString=CommonHttpClientUtil.getIp("http://120.25.150.39:8081/index.php/api/entry?method=proxyServer.ipinfolist&quantity=&province=%E5%B9%BF%E4%B8%9C%E7%9C%81&city=%E5%B9%BF%E5%B7%9E%E5%B8%82&anonymous=1&ms=1&service=0&protocol=1&wdsy=on&distinct=true&format=json&separator=1&separator_txt=");
+//					JSONObject data=JSONObject.parseObject(ipString).getJSONObject("data");
+//					JSONArray ipArray=data.getJSONObject("list").getJSONArray("ProxyIpInfoList");
+//					JSONObject ipJson=ipArray.getJSONObject(0);
+//					 Constants.host =ipJson.getString("IP");
+//					 Constants.post = ipJson.getIntValue("Port");
+//					 System.out.println(Constants.host + ":" + Constants.post);
+				
+					
 			e.printStackTrace();
 		}
 

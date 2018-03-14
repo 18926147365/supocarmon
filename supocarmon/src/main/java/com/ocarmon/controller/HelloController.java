@@ -160,12 +160,16 @@ public class HelloController {
 
 	@RequestMapping("start")
 	public void strat() {
-		String ipString=CommonHttpClientUtil.getIp("http://120.25.150.39:8081/index.php/api/entry?method=proxyServer.ipinfolist&quantity=&province=%E5%B9%BF%E4%B8%9C%E7%9C%81&city=%E5%B9%BF%E5%B7%9E%E5%B8%82&anonymous=1&ms=1&service=0&protocol=1&wdsy=on&distinct=true&format=json&separator=1&separator_txt=");
-		JSONObject data=JSONObject.parseObject(ipString).getJSONObject("data");
-		JSONArray ipArray=data.getJSONObject("list").getJSONArray("ProxyIpInfoList");
-		JSONObject ipJson=ipArray.getJSONObject(0);
-		 Constants.host =ipJson.getString("IP");
-		 Constants.post = ipJson.getIntValue("Port");
+		 JSONObject jsonObject = new JSONObject();
+		 String ipString = CommonHttpClientUtil.getIp(
+		 "http://www.jinglingdaili.com/Index-generate_api_url.html?packid=1&qty=1&time=1&pro=&city=&port=1&format=json&ss=1&css=&dt=1");
+		 System.out.println(ipString);
+		 jsonObject = JSONObject.parseObject(ipString);
+		 JSONArray arrays = jsonObject.getJSONArray("data");
+		 JSONObject ipJSON = arrays.getJSONObject(0);
+		 Constants.host =ipJSON.getString("IP");
+		 Constants.post = ipJSON.getIntValue("Port");
+		 
 		//查询列队中是否存在urlToken
 		Queue<String> queue= (Queue<String>) redisService.get(Constants.USERTTOKENQUEUE);
 		if(queue==null || queue.size()==0) {
@@ -180,40 +184,12 @@ public class HelloController {
 			}
 			redisService.set(Constants.USERTTOKENQUEUE, queue);
 		}
-		scheduledThreadPool=Executors.newScheduledThreadPool(5);
-		for (int i = 0; i < 5; i++) {
+		scheduledThreadPool=Executors.newScheduledThreadPool(3);
+		for (int i = 0; i < 10; i++) {
 			scheduledThreadPool.scheduleAtFixedRate(new Runnable() {
 				@Override
 				public void run() {
-//					count++;
-//					//若爬取数大于300 ,暂停线程池
-//					if(count>100000) {
-//						LOGGER.info("线程暂停");
-//						try {
-//							SimpleDateFormat sdf=new SimpleDateFormat("HH");
-//							int hh=Integer.valueOf(sdf.format(new Date()));
-//							int[] hhs= {2,4,6,8,10,12,14,16,18,20};
-//							for(int i=0;i<hhs.length;i++) {
-//								if(hh==hhs[i]) {
-//									scheduledThreadPool.awaitTermination(5, TimeUnit.MINUTES);
-//								}else {
-//									scheduledThreadPool.awaitTermination(60, TimeUnit.MINUTES);
-//								}
-//							}
-//							
-//							
-//						} catch (InterruptedException e) {
-//							
-//							e.printStackTrace();
-//						}
-//						count=0;
-//						
-//					}
-					
-					
-					
-					
-					spliderService.start();
+						spliderService.start();
 				}
 			}, 0, 300, TimeUnit.MILLISECONDS);
 		}

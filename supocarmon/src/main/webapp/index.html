@@ -46,7 +46,7 @@
 			<div class="panel-heading">@知乎热点文章<span  style="float: right;"><a class="glyphicon glyphicon-refresh" id="articles-refresh" href="#">换一批</a></span></div>
 			<div class="panel-body">
 				<div class="list-group" style="font-size: 1.6rem;" id="list-articles"></div>
-				<div ><button style="width: 100%" type="button" class="btn btn-success" onclick="queryArticlesTopic()">换一批话题>>></button></div>
+				<div ><button style="width: 100%" type="button" class="btn btn-success" onclick="barterArticles()">换一批话题>>></button></div>
 			</div>
 		</div>
 	</div>
@@ -158,14 +158,34 @@
 		})
 		//换一批话题
 		$("#articles-refresh").click(function(){
-			queryArticlesTopic();
+			barterArticles();
 		})
 		
 		
 	})
 
-	
-	
+	//换一批热点看看
+	function barterArticles(){
+		$("#list-articles").empty();
+		showLoading();
+		$.ajax({
+					url : "/articles/barterArticles",
+					dataType : "json",
+					success : function(data) {
+						if (data.code == 0) {
+							var info = JSON.parse(data.info);
+							var htmlStr = "";
+							for ( var i in info) {
+								htmlStr += '<a href="#" class="list-group-item" data-id="'+info[i].id+'"><span class="badge">'+info[i].voteupCount+'</span>'
+										+ info[i].title + '</a>';
+							}
+							$("#list-articles").append(htmlStr)
+						}
+					},complete:function(){
+						closeLoading();
+					}
+				})
+	}
 	//查询热点话题
 	function queryArticlesTopic() {
 		$("#list-articles").empty();
