@@ -46,7 +46,7 @@
 			<div class="panel-heading">@知乎热点文章<span  style="float: right;"><a class="glyphicon glyphicon-refresh" id="articles-refresh" href="#">换一批</a></span></div>
 			<div class="panel-body">
 				<div class="list-group" style="font-size: 1.6rem;" id="list-articles"></div>
-				<div ><button style="width: 100%" type="button" class="btn btn-success" onclick="barterArticles()">换一批话题>>></button></div>
+				<div ><button style="width: 100%" type="button" class="btn btn-success" onclick="queryArticlesTopic()">下一页</button></div>
 			</div>
 		</div>
 	</div>
@@ -186,13 +186,16 @@
 					}
 				})
 	}
+	var pageIndex=0;
 	//查询热点话题
 	function queryArticlesTopic() {
+	
 		$("#list-articles").empty();
 		showLoading();
 		$.ajax({
 					url : "/articles/queryTopic",
 					dataType : "json",
+					data:{pageIndex:pageIndex++},
 					success : function(data) {
 						if (data.code == 0) {
 							var info = JSON.parse(data.info);

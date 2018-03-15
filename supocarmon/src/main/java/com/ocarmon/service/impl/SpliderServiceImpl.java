@@ -56,7 +56,7 @@ public class SpliderServiceImpl implements SpliderService {
 		redisService.set(Constants.USERTTOKENQUEUE, userTokenQueue);
 		// 开始爬取用户数据
 		String url = "https://www.zhihu.com/people/" + userToken + "/following";
-		HttpClientUtil clientUtil = new HttpClientUtil(Constants.host, Constants.post);
+		HttpClientUtil clientUtil = new HttpClientUtil(null, Constants.post);
 		try {
 
 			String content = (clientUtil.getWebPage(url));
@@ -124,15 +124,15 @@ public class SpliderServiceImpl implements SpliderService {
 		} catch (Exception e) {
 				System.out.println();
 				if(e.getMessage().indexOf("404")==-1) {
-					 JSONObject jsonObject = new JSONObject();
-					 String ipString = CommonHttpClientUtil.getIp(
-					 "http://www.jinglingdaili.com/Index-generate_api_url.html?packid=1&qty=1&time=1&pro=&city=&port=1&format=json&ss=1&css=&dt=1");
-					 jsonObject = JSONObject.parseObject(ipString);
-					 JSONArray arrays = jsonObject.getJSONArray("data");
-					 JSONObject ipJSON = arrays.getJSONObject(0);
-					 Constants.host =ipJSON.getString("IP");
-					 Constants.post = ipJSON.getIntValue("Port");
-					 System.out.println(Constants.host + ":" + Constants.post);
+//					 JSONObject jsonObject = new JSONObject();
+//					 String ipString = CommonHttpClientUtil.getIp(
+//					 "http://www.jinglingdaili.com/Index-generate_api_url.html?packid=1&qty=1&time=1&pro=&city=&port=1&format=json&ss=1&css=&dt=1");
+//					 jsonObject = JSONObject.parseObject(ipString);
+//					 JSONArray arrays = jsonObject.getJSONArray("data");
+//					 JSONObject ipJSON = arrays.getJSONObject(0);
+//					 Constants.host =ipJSON.getString("IP");
+//					 Constants.post = ipJSON.getIntValue("Port");
+//					 System.out.println(Constants.host + ":" + Constants.post);
 				}else if(e.getMessage().indexOf("410")!=-1) {
 				}
 					Constants.errorRqCount++;

@@ -160,15 +160,15 @@ public class HelloController {
 
 	@RequestMapping("start")
 	public void strat() {
-		 JSONObject jsonObject = new JSONObject();
-		 String ipString = CommonHttpClientUtil.getIp(
-		 "http://www.jinglingdaili.com/Index-generate_api_url.html?packid=1&qty=1&time=1&pro=&city=&port=1&format=json&ss=1&css=&dt=1");
-		 System.out.println(ipString);
-		 jsonObject = JSONObject.parseObject(ipString);
-		 JSONArray arrays = jsonObject.getJSONArray("data");
-		 JSONObject ipJSON = arrays.getJSONObject(0);
-		 Constants.host =ipJSON.getString("IP");
-		 Constants.post = ipJSON.getIntValue("Port");
+//		 JSONObject jsonObject = new JSONObject();
+//		 String ipString = CommonHttpClientUtil.getIp(
+//		 "http://www.jinglingdaili.com/Index-generate_api_url.html?packid=1&qty=1&time=1&pro=&city=&port=1&format=json&ss=1&css=&dt=1");
+//		 System.out.println(ipString);
+//		 jsonObject = JSONObject.parseObject(ipString);
+//		 JSONArray arrays = jsonObject.getJSONArray("data");
+//		 JSONObject ipJSON = arrays.getJSONObject(0);
+//		 Constants.host =ipJSON.getString("IP");
+//		 Constants.post = ipJSON.getIntValue("Port");
 		 
 		//查询列队中是否存在urlToken
 		Queue<String> queue= (Queue<String>) redisService.get(Constants.USERTTOKENQUEUE);
@@ -184,7 +184,7 @@ public class HelloController {
 			}
 			redisService.set(Constants.USERTTOKENQUEUE, queue);
 		}
-		scheduledThreadPool=Executors.newScheduledThreadPool(3);
+		scheduledThreadPool=Executors.newScheduledThreadPool(5);
 		for (int i = 0; i < 10; i++) {
 			scheduledThreadPool.scheduleAtFixedRate(new Runnable() {
 				@Override

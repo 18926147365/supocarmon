@@ -36,9 +36,10 @@ public class ArticlesController extends BaseController{
 	
 	/**
 	 *  查询热点话题
+	 *  @param 页数
 	 * */
 	@RequestMapping("queryTopic")
-	public String queryTopic() {
+	public String queryTopic(int pageIndex) {
 		LOGGER.info("刷新页面");
 		DBObject dbObject = new BasicDBObject();  
 		BasicDBObject fieldsObject=new BasicDBObject();  
@@ -52,7 +53,7 @@ public class ArticlesController extends BaseController{
 		fieldsObject.put("_id", false);    
 		Query query = new BasicQuery(dbObject,fieldsObject);  
 		query.with(new Sort(new Order(Direction.DESC,"voteupCount")));
-		query.skip(0);
+		query.skip((pageIndex*10));
 		query.limit(10);
 		List<Articles> list=mongoTemplate.find(query, Articles.class, "articles");
 		return retunSuccess(JSONObject.toJSONString(list));

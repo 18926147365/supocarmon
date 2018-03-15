@@ -66,8 +66,9 @@ public class HttpClientUtil {
 
 public HttpClientUtil() {}
 	public HttpClientUtil(String host,int port) {
-
-		proxy=new HttpHost(host, port);
+		if(host!=null) {
+			proxy=new HttpHost(host, port);
+		}
 		try {
 			SSLContext sslContext = SSLContexts.custom()
 					.loadTrustMaterial(KeyStore.getInstance(KeyStore.getDefaultType()), new TrustStrategy() {
