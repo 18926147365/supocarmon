@@ -184,11 +184,33 @@ public class HelloController {
 			}
 			redisService.set(Constants.USERTTOKENQUEUE, queue);
 		}
+		
+		final List<String> dateList=new ArrayList<>();
+		dateList.add("2");
+		dateList.add("5");
+		dateList.add("8");
+		dateList.add("11");
+		dateList.add("14");
+		dateList.add("17");
+		dateList.add("20");
+		dateList.add("23");
 		scheduledThreadPool=Executors.newScheduledThreadPool(5);
 		for (int i = 0; i < 10; i++) {
 			scheduledThreadPool.scheduleAtFixedRate(new Runnable() {
 				@Override
 				public void run() {
+					SimpleDateFormat sdf=new SimpleDateFormat("HH");
+					try {
+						String HH= sdf.format(new Date());
+						if(!dateList.contains(HH)) {
+							scheduledThreadPool.awaitTermination(60, TimeUnit.MINUTES);
+						}
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+					
 						spliderService.start();
 				}
 			}, 0, 300, TimeUnit.MILLISECONDS);
