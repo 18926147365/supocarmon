@@ -3,7 +3,6 @@
  */
 package com.ocarmon.controller;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -14,23 +13,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.BasicQuery;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,7 +31,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.ocarmon.config.Constants;
@@ -46,7 +38,6 @@ import com.ocarmon.entity.Articles;
 import com.ocarmon.entity.UrlToken;
 import com.ocarmon.service.RedisService;
 import com.ocarmon.service.SpliderService;
-import com.ocarmon.util.CommonHttpClientUtil;
 import com.ocarmon.util.HttpClientUtil;
 
 /**
