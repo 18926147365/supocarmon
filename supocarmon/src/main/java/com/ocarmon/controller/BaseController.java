@@ -30,11 +30,11 @@ public class BaseController {
 	 * 返回格式
 	 * {"code":-1,"msg":"fail","info":info}
 	 * */
-	public String returnFail(String info) {
+	public String returnFail(String msg) {
 		JSONObject json=new JSONObject();
 		json.put("code", -1);
-		json.put("msg", "fail");
-		json.put("info", info);
+		json.put("msg", msg);
+		json.put("info","fail" );
 		return json.toString();
 	}
 	/**

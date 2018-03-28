@@ -8,11 +8,18 @@
 <link rel="stylesheet" href="/component/css/base.css">
 <link rel="stylesheet" href="/component/css/articles.css">
 <link rel="stylesheet" href="/component/css/loading.css">
+<link rel="stylesheet" href="/component/plugin/bootstrap/css/fileinput.min.css">
 <link rel="stylesheet"
 	href="/component/plugin/bootstrap/css/bootstrap.css">
 <script type="text/javascript" src="/component/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="/component/js/referrer-killer.js"></script>
 <script type="text/javascript" src="/component/js/index.js"></script>
+<script type="text/javascript" src="/component/js/utils.js"></script>
+<script type="text/javascript" src="/component/plugin/bootstrap/js/piexif.js"></script>
+<script type="text/javascript" src="/component/plugin/bootstrap/js/sortable.js"></script>
+<script type="text/javascript" src="/component/plugin/bootstrap/js/fileinput.js"></script>
+<script type="text/javascript"
+	src="/component/plugin/bootstrap/locales/excelUploadZh.js"></script>
 <script type="text/javascript"
 	src="/component/plugin/bootstrap/js/bootstrap.js"></script>
 </head>
@@ -30,9 +37,10 @@
 					<a class="navbar-brand" href="#">ocarmon</a>
 				</div>
 				<div class="collapse navbar-collapse" id="example-navbar-collapse">
-					<ul class="nav navbar-nav">
-						<li class="active"><a href="#">知乎热门话题</a></li>
-						<li><a href="#">小游戏</a></li>
+					<ul class="nav navbar-nav" id="home_menu">
+						<li class="active" data-menu="1"><a href="#">知乎热门话题</a></li>
+						<li data-menu="2"><a href="#" >小游戏</a></li>
+						<li data-menu="3"><a href="#" >工具</a></li>
 
 					</ul>
 				</div>
@@ -40,132 +48,294 @@
 		</nav>
 	</div>
 	<!-- 导航栏 end-->
-	<!-- 画板 -->
-	<div>
-		<div class="panel panel-success">
-			<div class="panel-heading">@知乎热点文章<span  style="float: right;"><a class="glyphicon glyphicon-refresh" id="articles-refresh" href="#">换一批</a></span></div>
+	<!-- 知乎话题-->
+		<div id="zhihuArticles" class="panel panel-success home_menu">
+			<div class="panel-heading">
+				@知乎热点文章<span style="float: right;"><a
+					class="glyphicon glyphicon-refresh" id="articles-refresh" href="#">换一批</a></span>
+			</div>
 			<div class="panel-body">
-				<div class="list-group" style="font-size: 1.6rem;" id="list-articles"></div>
-				<div ><button style="width: 100%" type="button" class="btn btn-success" onclick="queryArticlesTopic()">下一页</button></div>
+				<div class="list-group" style="font-size: 1.6rem;"
+					id="list-articles"></div>
+				<div>
+					<button style="width: 100%" type="button" class="btn btn-success"
+						onclick="queryArticlesTopic()">下一页</button>
+				</div>
 			</div>
 		</div>
-	</div>
-	<div class="panel panel-default hide">
+	
+	<!-- 小游戏 -->
+	<div id="games" class="panel panel-default hide home_menu">
 		<div class="panel-heading">
 			<h3 class="panel-title">带有 title 的面板标题</h3>
 		</div>
 		<div class="panel-body">面板内容</div>
 	</div>
-
-	<!--  显示话题详情画板 -->
-	<div>
-	<div id="backup" > <a href="#backup-content"><button type="button" class=" btn btn-info btn-sm backup ">
-	 <span class="glyphicon glyphicon-plane"></span>
-	</button></a></div>
-	<div id="artiles-details" class="modal fade" tabindex="-1"
-		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content" id="backup-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">×</button>
-					<h4 class="modal-title" id="artiles-title"></h4>
+	
+	
+	
+	<!-- 工具  -->
+	<div class="panel-group  home_menu hide " id="utils">
+	<div class="panel panel-info">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseOne">
+					Excel编程式解析
+				</a>
+				<span class="badge">可用</span>
+			</h4>
+		</div>
+		<div id="collapseOne" class="panel-collapse collapse ">
+			<div class="panel-body">
+				<div >
+					 请选择上传的文件(只支持.xls .xlsx格式):<input id="excelFile" name="excelfile" type="file" class="file fileloading" multiple  data-upload-async="true" data-upload-url="/utils/excelUtils" data-max-file-count="1"  data-language="zh"  data-show-upload="false" data-show-caption="true" data-show-preview="false" data-allowed-file-extensions='["xls","xlsx"]'>
 				</div>
-				<div class="modal-body" id="artiles-content">
-				
-					<div class="artiles-introduce">
-						<span id="artiles-author" class="glyphicon glyphicon-user introduce-author"></span>
-						<span class="glyphicon glyphicon-eye-open" style="padding-left: 2rem;">浏览次数(<span id="articles-voteupCount">5254</span>)</span>
-						<a href="" id="artiles-sourceurl"><span  class="introduce-sourceurl">查看原文</span></a>
-					</div>
-					<div id="artiles-content-info">
+				<div id="excelTable">
+					 <h3><span class="label label-success">数据</span></h3>
+					 <div>共<span id="excelTableCount">2</span>条记录</div>
+					 <div class="toTable">
+						<table class="table table-striped" id="excelTableData">
+							<tr><td>910683587742</td><td>484657</td></tr><tr><td>982951578190</td><td>333851</td></tr>
+						</table>
+					 </div>
 					
+					<div>
+						<h3><span class="label label-info">运行代码块</span></h3>
+						<div style="padding-bottom: 0.5rem;">
+							<button class="btn btn-sm btn-success glyphicon glyphicon-play" data-loading-text="正在执行代码..." id="excelRunCode">运行</button>
+							<button class="btn btn-sm btn-warning glyphicon glyphicon-question-sign">疑问</button>
+						</div>
+						<textarea id="excelCode" style="font-size: 2rem;" class="form-control" rows="10" >
+$('#excelTableData tbody tr').each(function(i){
+	var cell=$(this).children("td");
+	var rowNum=i+1;//当前行(第几行)
+	var params1=cell.eq(0).text();
+	var params2=cell.eq(1).text();
+
+	consoles("第"+rowNum+"行: "+params1+"  "+params2);
+	
+	
+});</textarea>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<div style="position: absolute;">转自:<a href="https://www.zhihu.com/">知乎网站</a></div>
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<div>
+						<h3><span class="label label-warning">运行结果</span></h3><h4>执行时间:<span id="runTime">0</span>s</h4>
+						   <textarea id="myConsole" class="form-control" readonly rows="10"></textarea>
+						
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseTwo">
+					数据画像分析(现只支持JSON字符串)
+				</a>
+				<span class="badge">未开发</span>
+			</h4>
+		</div>
+		<div id="collapseTwo" class="panel-collapse collapse">
+			<div class="panel-body">
+				
+			</div>
+		</div>
 	</div>
-	<!-- 加载框css3 -->
-	<div id="loading" >
-		<div class="circle-loader">
-        <div class="circle-line">
-            <div class="circle circle-blue"></div>
-            <div class="circle circle-blue"></div>
-            <div class="circle circle-blue"></div>
-        </div>
-        <div class="circle-line">
-            <div class="circle circle-yellow"></div>
-            <div class="circle circle-yellow"></div>
-            <div class="circle circle-yellow"></div>
-        </div>
-        <div class="circle-line">
-            <div class="circle circle-red"></div>
-            <div class="circle circle-red"></div>
-            <div class="circle circle-red"></div>
-        </div>
-        <div class="circle-line">
-            <div class="circle circle-green"></div>
-            <div class="circle circle-green"></div>
-            <div class="circle circle-green"></div>
-        </div>
-    </div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" 
+				   href="#collapseThree">
+					JSON字符解析
+				</a>
+				<span class="badge">未开发</span>
+			</h4>
+		</div>
+		<div id="collapseThree" class="panel-collapse collapse">
+			<div class="panel-body">
+				
+			</div>
+		</div>
 	</div>
-	 
+</div>
 	
+	
+	<!--  显示话题详情画板 -->
+	<div>
+		<div id="backup" class="hide">
+			<a href="#backup-content"><button type="button"
+					class=" btn btn-info btn-sm backup ">
+					<span class="glyphicon glyphicon-plane"></span>
+				</button></a>
+		</div>
+		<div id="artiles-details" class="modal fade" tabindex="-1"
+			role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content" id="backup-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">×</button>
+						<h4 class="modal-title" id="artiles-title"></h4>
+					</div>
+					<div class="modal-body" id="artiles-content">
+
+						<div class="artiles-introduce">
+							<span id="artiles-author"
+								class="glyphicon glyphicon-user introduce-author"></span> <span
+								class="glyphicon glyphicon-eye-open" style="padding-left: 2rem;">浏览次数(<span
+								id="articles-voteupCount">5254</span>)
+							</span> <a href="" id="artiles-sourceurl"><span
+								class="introduce-sourceurl">查看原文</span></a>
+						</div>
+						<div id="artiles-content-info"></div>
+					</div>
+					<div class="modal-footer">
+						<div style="position: absolute;">
+							转自:<a href="https://www.zhihu.com/">知乎网站</a>
+						</div>
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- 工具div-end -->
+	<!-- 加载框css3 -->
+	<div id="loading">
+		<div class="circle-loader">
+			<div class="circle-line">
+				<div class="circle circle-blue"></div>
+				<div class="circle circle-blue"></div>
+				<div class="circle circle-blue"></div>
+			</div>
+			<div class="circle-line">
+				<div class="circle circle-yellow"></div>
+				<div class="circle circle-yellow"></div>
+				<div class="circle circle-yellow"></div>
+			</div>
+			<div class="circle-line">
+				<div class="circle circle-red"></div>
+				<div class="circle circle-red"></div>
+				<div class="circle circle-red"></div>
+			</div>
+			<div class="circle-line">
+				<div class="circle circle-green"></div>
+				<div class="circle circle-green"></div>
+				<div class="circle circle-green"></div>
+			</div>
+		</div>
+	</div>
+
+
 </body>
 
 <script type="text/javascript">
+
 	$(function() {
-		queryArticlesTopic();
+		
+// 		queryArticlesTopic();
 		//点击话题事件
 		$("#list-articles").on("click", ".list-group-item", function() {
 			var id = $(this)[0].dataset.id;
 			showLoading();
 			$.ajax({
-				url:"/articles/queryById",
-				data:{id:id},
-				dataType:"json",
-				success:function(data){
-					if(data.code==0){
+				url : "/articles/queryById",
+				data : {
+					id : id
+				},
+				dataType : "json",
+				success : function(data) {
+					if (data.code == 0) {
 						$("#artiles-details").modal('show');
-						var info=JSON.parse(data.info);
-						var content=info.content;
-						var title=info.title;
-						var sourceurl=info.url;
-						var voteupCount=info.voteupCount;
+						var info = JSON.parse(data.info);
+						var content = info.content;
+						var title = info.title;
+						var sourceurl = info.url;
+						var voteupCount = info.voteupCount;
 						$("#articles-voteupCount").text(voteupCount);
 						$("#artiles-title").text(title);
 						$("#artiles-author").text(info.author.name);
 						$("#artiles-content-info").html(content);
-						$("#artiles-sourceurl").attr("href",sourceurl);
+						$("#artiles-sourceurl").attr("href", sourceurl);
 						loadImage();
 					}
-				},complete:function(){
+				},
+				complete : function() {
 					closeLoading();
 				}
 			})
-			
+
 		})
+		// 上传文件被修改
+		$('#excelFile').change(function() {
+			$("#excelTableData").empty("");
+			$('#excelFile').fileinput('upload');
+		})
+		//上传成功
+		$("#excelFile").on("fileuploaded", function(event, data, previewId, index) {
+			var responseData=data.response;//响应数据
+			var excelTableCount=0;
+			if(responseData.code==0){
+				var excelArray=JSON.parse( responseData.info);
+				for(var i in excelArray){
+					var excelStr="";
+					var excelRow=excelArray[i];
+					var rowStr="";
+					for(var k in excelRow){
+						rowStr+="<td>"+excelRow[k]+"</td>";
+					}
+					excelStr+="<tr>"+rowStr+"</tr>"
+					$("#excelTable table").append(excelStr);
+					excelTableCount++;
+					$("#excelTableCount").text(excelTableCount);
+				}
+			}else{
+				alert(responseData.msg);
+			}
+		});
 		
-		$("#checkSource").click(function(){
-			var url=$(this)[0].dataset.sourceurl;
-			location.href=url;
+		
+		
+		
+		$("#checkSource").click(function() {
+			var url = $(this)[0].dataset.sourceurl;
+			location.href = url;
 		})
 		//换一批话题
-		$("#articles-refresh").click(function(){
+		$("#articles-refresh").click(function() {
 			barterArticles();
 		})
-		
-		
+		//点击菜单事件
+		$("#home_menu li").click(function(){
+			$("#home_menu li").removeClass("active");
+			var menu_index=parseInt($(this)[0].dataset.menu);
+			$(this).addClass("active");
+			$(".home_menu").addClass("hide");
+			switch (menu_index) {
+			case 1:
+				$("#zhihuArticles").removeClass("hide");
+				break;
+			case 2:
+				$("#games").removeClass("hide");
+				break;
+			case 3:
+				$("#utils").removeClass("hide");
+				break;
+
+			default:
+				break;
+			}
+			
+		})
+
 	})
 
 	//换一批热点看看
-	function barterArticles(){
+	function barterArticles() {
 		$("#list-articles").empty();
 		showLoading();
 		$.ajax({
@@ -176,68 +346,77 @@
 							var info = JSON.parse(data.info);
 							var htmlStr = "";
 							for ( var i in info) {
-								htmlStr += '<a href="#" class="list-group-item" data-id="'+info[i].id+'"><span class="badge">'+info[i].voteupCount+'</span>'
+								htmlStr += '<a href="#" class="list-group-item" data-id="'+info[i].id+'"><span class="badge">'
+										+ info[i].voteupCount
+										+ '</span>'
 										+ info[i].title + '</a>';
 							}
 							$("#list-articles").append(htmlStr)
 						}
-					},complete:function(){
+					},
+					complete : function() {
 						closeLoading();
 					}
 				})
 	}
-	var pageIndex=0;
+	var pageIndex = 0;
 	//查询热点话题
 	function queryArticlesTopic() {
-	
+
 		$("#list-articles").empty();
 		showLoading();
 		$.ajax({
 					url : "/articles/queryTopic",
 					dataType : "json",
-					data:{pageIndex:pageIndex++},
+					data : {
+						pageIndex : pageIndex++
+					},
 					success : function(data) {
 						if (data.code == 0) {
 							var info = JSON.parse(data.info);
 							var htmlStr = "";
 							for ( var i in info) {
-								htmlStr += '<a href="#" class="list-group-item" data-id="'+info[i].id+'"><span class="badge">'+info[i].voteupCount+'</span>'
+								htmlStr += '<a href="#" class="list-group-item" data-id="'+info[i].id+'"><span class="badge">'
+										+ info[i].voteupCount
+										+ '</span>'
 										+ info[i].title + '</a>';
 							}
 							$("#list-articles").append(htmlStr)
 						}
-					},complete:function(){
+					},
+					complete : function() {
 						closeLoading();
 					}
 				})
 	}
+	
+	
 </script>
 <script type="text/javascript">
-//加载403图片
-function loadImage(){
-	var imgs = $("#artiles-content img");
-	for (var i = 0; i < imgs.length; i++) {
-		var data_src = $(imgs[i]).attr("data-actualsrc");
-		
-		var html = showImg(data_src);
-		$(imgs[i]).replaceWith(html);
-	}
-}
-function showImg(url) {
-	var imgid = Math.random(), frameid = 'frameimg' + imgid;
-	window['img' + imgid] = '<img id="img" style="width:20rem;" src=\''+url+'\' />'
-			+ '<script>window.onload = function(){'
-			+ 'parent.document.getElementById(\''
-			+ frameid
-			+ '\').width=document.getElementById(\'img\').width+\'px\';'
-			+ 'parent.document.getElementById(\''
-			+ frameid
-			+ '\').height=document.getElementById(\'img\').height+\'px\';'
-			+ '}<'+'/script>';
-	return '<iframe id="' + frameid + '" src="javascript:parent[\'img'
-			+ imgid
-			+ '\'];" frameBorder="0" scrolling="no" width="100%"></iframe>';
-}
+	//加载403图片
+	function loadImage() {
+		var imgs = $("#artiles-content img");
+		for (var i = 0; i < imgs.length; i++) {
+			var data_src = $(imgs[i]).attr("data-actualsrc");
 
+			var html = showImg(data_src);
+			$(imgs[i]).replaceWith(html);
+		}
+	}
+	function showImg(url) {
+		var imgid = Math.random(), frameid = 'frameimg' + imgid;
+		window['img' + imgid] = '<img id="img" style="width:20rem;" src=\''+url+'\' />'
+				+ '<script>window.onload = function(){'
+				+ 'parent.document.getElementById(\''
+				+ frameid
+				+ '\').width=document.getElementById(\'img\').width+\'px\';'
+				+ 'parent.document.getElementById(\''
+				+ frameid
+				+ '\').height=document.getElementById(\'img\').height+\'px\';'
+				+ '}<'+'/script>';
+		return '<iframe id="' + frameid + '" src="javascript:parent[\'img'
+				+ imgid
+				+ '\'];" frameBorder="0" scrolling="no" width="100%"></iframe>';
+	}
 </script>
 </html>

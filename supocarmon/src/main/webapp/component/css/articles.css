@@ -25,6 +25,10 @@ position:absolute;
     top: 0;
     display: none;
 }
+.toTable{
+	height: 15rem;
+    overflow: auto;
+}
 .backup{
 	position: fixed;
     right: 1.2rem;
