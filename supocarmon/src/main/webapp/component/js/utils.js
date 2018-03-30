@@ -337,10 +337,6 @@ $(function() {
 			$("#zh5").val(zh4);
 			$("#zh1").val(zh3);
 		}
-	
-	
-	
-	
 	laydate.render({
 		  elem: '#zh1'
 		  ,calendar: true

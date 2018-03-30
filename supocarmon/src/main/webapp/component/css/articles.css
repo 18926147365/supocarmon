@@ -38,3 +38,12 @@ position:absolute;
     border-radius: 1rem;
 	
 }
+.headimg{
+	width: 5rem;
+	border-radius: 2.5rem;
+}
+.user_info{
+	    position: absolute;
+    top: 0;
+    right: 8rem;;
+}
