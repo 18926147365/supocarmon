@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="/component/plugin/bootstrap/css/fileinput.min.css">
 <link rel="stylesheet"
 	href="/component/plugin/bootstrap/css/bootstrap.css">
+<link rel="stylesheet"
+	href="/component/plugin/laydate/theme/default/laydate.css">
 <script type="text/javascript" src="/component/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="/component/js/referrer-killer.js"></script>
 <script type="text/javascript" src="/component/js/index.js"></script>
@@ -22,6 +24,8 @@
 	src="/component/plugin/bootstrap/locales/excelUploadZh.js"></script>
 <script type="text/javascript"
 	src="/component/plugin/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript"
+	src="/component/plugin/laydate/laydate.js"></script>
 </head>
 <body>
 	<!-- 导航栏 -->
@@ -38,9 +42,9 @@
 				</div>
 				<div class="collapse navbar-collapse" id="example-navbar-collapse">
 					<ul class="nav navbar-nav" id="home_menu">
-						<li class="active" data-menu="1"><a href="#">知乎热门话题</a></li>
+						<li  data-menu="1" class="active"><a href="#">知乎热门话题</a></li>
 						<li data-menu="2"><a href="#" >小游戏</a></li>
-						<li data-menu="3"><a href="#" >工具</a></li>
+						<li data-menu="3" ><a href="#" >工具</a></li>
 
 					</ul>
 				</div>
@@ -143,19 +147,79 @@ $('#excelTableData tbody tr').each(function(i){
 			</div>
 		</div>
 	</div>
-	<div class="panel panel-default">
+	<div class="panel panel-info">
 		<div class="panel-heading">
 			<h4 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseThree">
-					JSON字符解析
+					日期操作工具
 				</a>
-				<span class="badge">未开发</span>
+				<span class="badge">可用</span>
 			</h4>
 		</div>
 		<div id="collapseThree" class="panel-collapse collapse">
 			<div class="panel-body">
-				
+				<div>
+					<h3 style="color:#00BCD4">时间格式转换</h3>
+					<div >
+						<div>
+							<div style="display: inline-block;">
+								时间字符串:<input type="text" style="width: 25rem;" value="2018-03-28 18:01:33" class="form-control" id="zh1" placeholder="时间格式例:2018-01-01 00:00:01">
+							</div>
+							<span>||</span>
+							<div style="display: inline-block;">
+								时间戳:<input type="text" style="width: 25rem;" value="2018-03-28 18:01:33" class="form-control" id="zh2" placeholder="">
+							</div>
+							<span>>></span>
+							<div style="display: inline-block;">
+								时间格式:<input type="text" style="width: 25rem;" value="yyyy-MM-dd HH:mm:ss" class="form-control" id="zh3" placeholder="时间格式例:yyyy-MM-dd HH:mm:ss">
+							</div>
+							<span>验证:<h4 style="display: inline-block;"><span id="zhtimesuccess" class="label label-success">成功</span><span id="zhtimefail" style="display: none" class="label label-danger">失败</span></h4></span>
+						</div>
+						<div>
+							<div style="display: inline-block;">
+								转换时间格式：<input type="text" style="width: 25rem;" value="yyyy年MM月dd日  HH时mm分ss秒" class="form-control" id="zh4" placeholder="时间格式例:yyyy年MM月dd日  HH时mm分ss秒">
+							</div>
+							<span>>></span>
+							<div style="display: inline-block;">
+								转换后的时间：<input type="text" style="width: 25rem;" value="" readonly  class="form-control" id="zh5" placeholder="">
+							</div>
+							<button style="display: inline-block;" class="btn btn-info" onclick="tranTimestamp1()">格式化</button>
+						</div>
+					</div>
+						
+					<hr>
+				</div>
+				<div>
+					<h3 style="color:#00BCD4">时间运算</h3>
+					<div>
+						选择待运算时间:<input type="text" style="width: 25rem;display: inline-block;" value=""   class="form-control" id="calc1" placeholder="2018-01-01 00:00:00">
+						<span>
+							>><input type="text" style="width: 5rem;display: inline-block;" value=""   class="form-control" id="calc2" placeholder="0"/>年
+						</span>
+						<span>
+							<input type="text" style="width: 5rem;display: inline-block;" value=""   class="form-control" id="calc3" placeholder="0"/>月
+						</span>
+						<span>
+							<input type="text" style="width: 5rem;display: inline-block;" value="1"   class="form-control" id="calc4" placeholder="0"/>日
+						</span>
+						<span>
+							<input type="text" style="width: 8.1rem;display: inline-block;" value=""   class="form-control" id="calc5" placeholder="00:00:00"/>时分秒
+						</span>
+						<button style="display: inline-block;" class="btn btn-info" onclick="calcDate()">运算</button>
+						<div>
+							<div style="display: inline-block;">在时间之前:<input type="text" style="width: 25rem;" value=""   class="form-control" readonly id="calc6" placeholder="结果"/></div>
+							<span>--</span>
+							<div style="display: inline-block;">在时间之后:<input type="text" style="width: 25rem;" value=""   class="form-control" readonly id="calc7" placeholder="结果"/></div>
+						</div>
+					</div>
+					<div style="padding-top: 3.5rem">
+						时间间隔：<input type="text" style="width: 40rem;display: inline-block;" value=""   class="form-control" id="calc10" placeholder=""/>
+						<button style="display: inline-block;" class="btn btn-info" onclick="calcDate2()">运算</button>
+						<span id="dateCalc">共相差 0 天 0 时 0 分 0 秒</span>
+					</div>
+					<hr>
+				</div>
 			</div>
 		</div>
 	</div>
