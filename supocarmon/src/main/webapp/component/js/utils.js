@@ -76,9 +76,9 @@ function calcDate2(){
 	var dates=calc10.split(" 至 ");
 	var date1=dates[0];
 	var date2=dates[1];
-	var timestamp1 = Date.parse(new Date(date1));
-	var timestamp2 = Date.parse(new Date(date2));
-	var timestamp=timestamp1-timestamp2;
+	var timestamp1 = Date.parse(new Date(date1.replace(/-/g, '/')));
+	var timestamp2 = Date.parse(new Date(date2.replace(/-/g, '/')));
+	var timestamp=parseInt(timestamp1)-parseInt(timestamp2);
 	timestamp=timestamp<0?timestamp*(-1):timestamp;
 	var d=parseInt(timestamp/1000/60/60/24);
 	var h=parseInt((timestamp-(d*1000*60*60*24))/1000/60/60);
@@ -87,6 +87,34 @@ function calcDate2(){
 	
 	$("#dateCalc").text("共相差 "+d+" 天 "+h+" 时 "+m+" 分 "+s+" 秒");
 	
+}
+function tranTimestamp1(){
+	var zh1=$("#zh1").val();
+	var zh2=$("#zh2").val();
+	var zh3=$("#zh3").val();
+	var zh4=$("#zh4").val();
+	//开始解析
+	var sdf = new SimpleDateFormat (zh3);
+	var date=sdf.parse(zh1);
+	if(date=="error"){
+		$("#zhtimesuccess").hide();
+		$("#zhtimefail").show();
+		$("#zh5").val("");
+	}else{
+		//验证成功
+		var timestamp = Date.parse(date);
+		$("#zh2").val(timestamp);
+		$("#zhtimesuccess").show();
+		$("#zhtimefail").hide();
+		var Y=(date.getFullYear());
+		var M = ((date.getMonth()+1) < 10 ? '0'+((date.getMonth()+1)) : date.getMonth()+1);
+		var D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate());
+		var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
+		var m = (date.getMinutes() <10 ? '0' + date.getMinutes() : date.getMinutes());
+		var s = (date.getSeconds() <10 ? '0' + date.getSeconds() : date.getSeconds());
+		zh4=zh4.replace("yyyy",Y).replace("MM",M).replace("dd",D).replace("HH",h).replace("mm",m).replace("ss",s);
+		$("#zh5").val(zh4);
+	}
 }
 Date.prototype.format = function(format) {
     var date = {
@@ -292,34 +320,7 @@ $(function() {
 		
 		
 		
-		function tranTimestamp1(){
-			var zh1=$("#zh1").val();
-			var zh2=$("#zh2").val();
-			var zh3=$("#zh3").val();
-			var zh4=$("#zh4").val();
-			//开始解析
-			var sdf = new SimpleDateFormat (zh3);
-			var date=sdf.parse(zh1);
-			if(date=="error"){
-				$("#zhtimesuccess").hide();
-				$("#zhtimefail").show();
-				$("#zh5").val("");
-			}else{
-				//验证成功
-				var timestamp = Date.parse(date);
-				$("#zh2").val(timestamp);
-				$("#zhtimesuccess").show();
-				$("#zhtimefail").hide();
-				var Y=(date.getFullYear());
-				var M = ((date.getMonth()+1) < 10 ? '0'+((date.getMonth()+1)) : date.getMonth()+1);
-				var D = (date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate());
-				var h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours());
-				var m = (date.getMinutes() <10 ? '0' + date.getMinutes() : date.getMinutes());
-				var s = (date.getSeconds() <10 ? '0' + date.getSeconds() : date.getSeconds());
-				zh4=zh4.replace("yyyy",Y).replace("MM",M).replace("dd",D).replace("HH",h).replace("mm",m).replace("ss",s);
-				$("#zh5").val(zh4);
-			}
-		}
+		
 		function tranTimestamp2(){
 			var zh4=$("#zh4").val();
 			var zh3=$("#zh3").val();
@@ -344,6 +345,7 @@ $(function() {
 		  elem: '#zh1'
 		  ,calendar: true
 		  ,type: 'datetime'
+		,format:$("#zh3").val()
 	});
 	laydate.render({
 		elem: '#calc6'
