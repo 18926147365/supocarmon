@@ -44,7 +44,7 @@
 					<ul class="nav navbar-nav" id="home_menu">
 						<li  data-menu="1" class="active"><a href="#">知乎热门话题</a></li>
 						<li data-menu="2"><a href="#" >小游戏</a></li>
-						<li data-menu="3" ><a href="#" >工具</a></li>
+						<li data-menu="3"><a href="#" >工具</a></li>
 
 					</ul>
 				</div>
@@ -134,19 +134,22 @@ $('#excelTableData tbody tr').each(function(i){
 			</div>
 		</div>
 	</div>
+	<!-- 文件上传 -->
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4 class="panel-title">
 				<a data-toggle="collapse" data-parent="#accordion" 
 				   href="#collapseTwo">
-					数据画像分析(现只支持JSON字符串)
+					文件临时上传
 				</a>
 				<span class="badge">未开发</span>
 			</h4>
 		</div>
-		<div id="collapseTwo" class="panel-collapse collapse">
+		<div id="collapseTwo" class="panel-collapse collapse in">
 			<div class="panel-body">
-				
+				<div >
+					 请选择上传的文件:<input id="myFile" name="uploadMyFile" type="file" class="file fileloading" multiple  data-upload-async="true" data-upload-url="/utils/uploadMyFile"  data-language="zh"  data-show-upload="true" data-show-caption="true" data-show-preview="true" >
+				</div>
 			</div>
 		</div>
 	</div>
@@ -303,7 +306,10 @@ $('#excelTableData tbody tr').each(function(i){
 <script type="text/javascript">
 
 	$(function() {
-		
+		$("#home_menu li").removeClass("active");
+		var menu_index=3
+		$(".home_menu").addClass("hide");
+		$("#utils").removeClass("hide");
 // 		queryArticlesTopic();
 		//点击话题事件
 		$("#list-articles").on("click", ".list-group-item", function() {

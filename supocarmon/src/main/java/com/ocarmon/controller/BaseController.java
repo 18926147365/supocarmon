@@ -3,6 +3,9 @@
  */
 package com.ocarmon.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import com.alibaba.fastjson.JSONObject;
 
 /** 
@@ -72,6 +75,7 @@ public class BaseController {
 		json.put("info", info);
 		return json.toString();
 	}
+	
 	
 	
 }

@@ -376,3 +376,22 @@ $(function() {
 		  ,format: 'yyyy-MM-dd HH:mm:ss'
 		}); 
 })
+//--------------------------------------------------------------------------上传临时文件
+$(function(){
+	$("#myFile").on("fileuploaded", function(event, data, previewId, index) {
+		var responseData=data.response;//响应数据
+		var code=responseData.code;
+		var msg=responseData.msg;
+		if(code==0){//成功
+			
+		}else if(code==1){//系统异常
+			alert(msg);
+		}else if(code==2){//未登陆
+//			 $('#myFile').fileinput('refresh');//文件框刷新操作  
+			alert("未登陆");
+			return;
+		}else if(code==3){//无权限
+			alert("没有上传权限!");
+		}
+	});
+})
